@@ -12,7 +12,7 @@
           {{ obj.output }} <span class="typed-cursor">|</span>
         </div>
         <!-- 联系方式 -->
-        <div class="blog-contact">
+        <!-- <div class="blog-contact">
           <a
             v-if="isShowSocial('qq')"
             class="mr-5 iconfont iconqq"
@@ -35,7 +35,7 @@
             :href="blogInfo.websiteConfig.gitee"
             class="iconfont icongitee-fill-round"
           />
-        </div>
+        </div> -->
       </div>
       <!-- 向下滚动 -->
       <div class="scroll-down" @click="scrollDown">
@@ -193,11 +193,11 @@
           <!-- 网站信息 -->
           <v-card class="blog-card animated zoomIn mt-5 big">
             <div class="web-info-title">
-              <v-icon size="18">mdi-bell</v-icon>
-              公告
+              <v-icon size="20" color="#4c4948">mdi-chat-outline</v-icon>
+              评论
             </div>
-            <div style="font-size:0.875rem">
-              {{ blogInfo.websiteConfig.websiteNotice }}
+            <div style="font-size:0.875rem" v-for="item in talkList" :key="item">
+              {{ item }}
             </div>
           </v-card>
           <!-- 网站信息 -->
@@ -380,7 +380,7 @@ export default {
   height: 100vh;
   background-attachment: fixed;
   text-align: center;
-  color: #fff !important;
+  color: #323030;
   animation: header-effect 1s;
 }
 .banner-container {
@@ -579,7 +579,7 @@ export default {
   font-size: 0.875rem;
 }
 .scroll-down-effects {
-  color: #eee !important;
+  color: #0d0c0c !important;
   text-align: center;
   text-shadow: 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.15);
   line-height: 1.5;

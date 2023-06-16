@@ -1,11 +1,35 @@
 package com.minzheng.blog.service.impl;
 
+import static com.minzheng.blog.constant.CommonConst.CITY;
+import static com.minzheng.blog.constant.CommonConst.DEFAULT_CONFIG_ID;
+import static com.minzheng.blog.constant.CommonConst.FALSE;
+import static com.minzheng.blog.constant.CommonConst.PROVINCE;
+import static com.minzheng.blog.constant.CommonConst.UNKNOWN;
+import static com.minzheng.blog.constant.RedisPrefixConst.ABOUT;
+import static com.minzheng.blog.constant.RedisPrefixConst.ARTICLE_VIEWS_COUNT;
+import static com.minzheng.blog.constant.RedisPrefixConst.BLOG_VIEWS_COUNT;
+import static com.minzheng.blog.constant.RedisPrefixConst.UNIQUE_VISITOR;
+import static com.minzheng.blog.constant.RedisPrefixConst.VISITOR_AREA;
+import static com.minzheng.blog.constant.RedisPrefixConst.WEBSITE_CONFIG;
+import static com.minzheng.blog.enums.ArticleStatusEnum.PUBLIC;
+
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.minzheng.blog.dao.*;
-import com.minzheng.blog.dto.*;
+import com.minzheng.blog.dao.ArticleDao;
+import com.minzheng.blog.dao.CategoryDao;
+import com.minzheng.blog.dao.MessageDao;
+import com.minzheng.blog.dao.TagDao;
+import com.minzheng.blog.dao.UserInfoDao;
+import com.minzheng.blog.dao.WebsiteConfigDao;
+import com.minzheng.blog.dto.ArticleRankDTO;
+import com.minzheng.blog.dto.ArticleStatisticsDTO;
+import com.minzheng.blog.dto.BlogBackInfoDTO;
+import com.minzheng.blog.dto.BlogHomeInfoDTO;
+import com.minzheng.blog.dto.CategoryDTO;
+import com.minzheng.blog.dto.TagDTO;
+import com.minzheng.blog.dto.UniqueViewDTO;
 import com.minzheng.blog.entity.Article;
 import com.minzheng.blog.entity.WebsiteConfig;
 import com.minzheng.blog.service.BlogInfoService;
@@ -20,18 +44,18 @@ import com.minzheng.blog.vo.WebsiteConfigVO;
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.OperatingSystem;
 import eu.bitwalker.useragentutils.UserAgent;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.minzheng.blog.constant.CommonConst.*;
-import static com.minzheng.blog.constant.RedisPrefixConst.*;
-import static com.minzheng.blog.enums.ArticleStatusEnum.PUBLIC;
 
 /**
  * 博客信息服务

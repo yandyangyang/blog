@@ -35,7 +35,7 @@ export default {
   color: #eee;
   font-size: 14px;
   text-align: center;
-  background: linear-gradient(-45deg, #ee7752, #ce3e75, #23a6d5, #23d5ab);
+  background-color: #3db2dc;
   background-size: 400% 400%;
   animation: Gradient 10s ease infinite;
 }

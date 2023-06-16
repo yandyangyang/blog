@@ -1,5 +1,7 @@
 package com.minzheng.blog.service.impl;
 
+import static com.minzheng.blog.constant.RedisPrefixConst.PAGE_COVER;
+
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzheng.blog.dao.PageDao;
@@ -8,15 +10,11 @@ import com.minzheng.blog.service.PageService;
 import com.minzheng.blog.service.RedisService;
 import com.minzheng.blog.util.BeanCopyUtils;
 import com.minzheng.blog.vo.PageVO;
+import java.util.List;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-
-import java.util.List;
-import java.util.Objects;
-
-import static com.minzheng.blog.constant.RedisPrefixConst.PAGE_COVER;
 
 /**
  * 页面服务
@@ -26,6 +24,7 @@ import static com.minzheng.blog.constant.RedisPrefixConst.PAGE_COVER;
  */
 @Service
 public class PageServiceImpl extends ServiceImpl<PageDao, Page> implements PageService {
+
     @Autowired
     private RedisService redisService;
     @Autowired
@@ -54,6 +53,7 @@ public class PageServiceImpl extends ServiceImpl<PageDao, Page> implements PageS
         List<PageVO> pageVOList;
         // 查找缓存信息，不存在则从mysql读取，更新缓存
         Object pageList = redisService.get(PAGE_COVER);
+        redisService.del(PAGE_COVER);
         if (Objects.nonNull(pageList)) {
             pageVOList = JSON.parseObject(pageList.toString(), List.class);
         } else {

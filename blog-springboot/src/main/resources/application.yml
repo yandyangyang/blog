@@ -11,9 +11,9 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://175.24.188.175:3306/blog?serverTimezone=Asia/Shanghai&allowMultiQueries=true
+    url: jdbc:mysql://1.15.68.125:3306/blog?serverTimezone=Asia/Shanghai&allowMultiQueries=true
     username: root
-    password: 12345678
+    password: qweQWE#123.
     hikari:
       minimum-idle: 5
       # 空闲连接存活最大时间，默认600000（10分钟）
@@ -31,12 +31,12 @@ spring:
       connection-test-query: SELECT 1
   # redis配置
   redis:
-    host: 175.24.188.175
+    host: 1.15.68.125
     port: 6379
-    password: 123456
+    password: qweQWE#123.
   # mq配置
   rabbitmq:
-    host: 175.24.188.175
+    host: 1.15.68.125
     port: 5672
     username: guest
     password: guest
@@ -46,10 +46,10 @@ spring:
           enabled: true
           max-attempts: 3 #最大重试次数
           initial-interval: 3000 #重试间隔时间（单位毫秒）
-#  # es配置 若搜索模式为mysql可删除
-#  elasticsearch:
-#    rest:
-#      uris: 你的IP:9200
+  #  # es配置 若搜索模式为mysql可删除
+  #  elasticsearch:
+  #    rest:
+  #      uris: 你的IP:9200
   # 邮箱配置
   mail:
     host: smtp.qq.com
@@ -86,7 +86,7 @@ upload:
   mode: local
   local:
     # nginx映射本地文件路径，无域名则为 ip:83
-    url: http://175.24.188.175:83/
+    url: http://1.15.68.125:83/
     # 本地文件存储路径
     path: /usr/local/upload/
   oss:
@@ -119,8 +119,3 @@ weibo:
   redirect-url: 微博回调地址
   access-token-url: https://api.weibo.com/oauth2/access_token
   user-info-url: https://api.weibo.com/2/users/show.json?uid={uid}&access_token={access_token}
-nacos:
-  config:
-    server-addr: 175.24.188.175:8848
-    enabled: true
-    namespace: public

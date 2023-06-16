@@ -216,6 +216,7 @@ ul {
   text-shadow: none;
 }
 .nav-container {
+  padding: 0 200px;
   font-size: 14px;
   width: 100%;
   height: 100%;
