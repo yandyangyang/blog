@@ -58,7 +58,7 @@ export default {
     LoginModel,
     RegisterModel,
     ForgetModel,
-    EmailModel,
+    EmailModel
     // ChatRoom
   },
   methods: {

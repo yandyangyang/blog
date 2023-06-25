@@ -1,23 +1,31 @@
 package com.minzheng.blog.controller;
 
 
+import static com.minzheng.blog.constant.OptTypeConst.REMOVE;
+import static com.minzheng.blog.constant.OptTypeConst.UPDATE;
+
 import com.minzheng.blog.annotation.AccessLimit;
 import com.minzheng.blog.annotation.OptLog;
 import com.minzheng.blog.dto.MessageBackDTO;
-import com.minzheng.blog.vo.PageResult;
-import com.minzheng.blog.vo.*;
 import com.minzheng.blog.dto.MessageDTO;
 import com.minzheng.blog.service.MessageService;
+import com.minzheng.blog.vo.ConditionVO;
+import com.minzheng.blog.vo.MessageVO;
+import com.minzheng.blog.vo.PageResult;
+import com.minzheng.blog.vo.Result;
+import com.minzheng.blog.vo.ReviewVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import java.util.List;
-
-import static com.minzheng.blog.constant.OptTypeConst.REMOVE;
-import static com.minzheng.blog.constant.OptTypeConst.UPDATE;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 留言控制器
@@ -54,6 +62,18 @@ public class MessageController {
     @GetMapping("/messages")
     public Result<List<MessageDTO>> listMessages() {
         return Result.ok(messageService.listMessages());
+    }
+
+    /**
+     * 查看留言列表
+     *
+     * @return {@link Result<MessageDTO>} 留言列表
+     */
+    @ApiOperation(value = "查看留言列表")
+    @GetMapping("/showMessages")
+    public Result<List<String>> showMessages() {
+        List<MessageDTO> messageDTOS = messageService.listMessages();
+        return Result.ok(messageDTOS.stream().map(MessageDTO::getMessageContent).collect(Collectors.toList()));
     }
 
     /**

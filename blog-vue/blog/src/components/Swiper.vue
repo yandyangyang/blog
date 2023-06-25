@@ -1,5 +1,5 @@
 <template>
-  <router-link to="/talks" class="swiper-container">
+  <router-link to="/message" class="swiper-container">
     <v-icon size="20" color="#4c4948">mdi-chat-outline</v-icon>
     <div
       :style="{ height: height * lineNum + 'px' }"

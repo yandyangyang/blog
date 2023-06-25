@@ -37,6 +37,7 @@
     "vue-avatar-cropper": "^1.0.9",
     "vue-axios": "^2.1.5",
     "vue-baberrage": "^3.2.4",
+    "vue-calendar-component": "^2.8.2",
     "vue-cute-timeline": "^1.2.8",
     "vue-image-swipe": "^1.0.5",
     "vue-infinite-loading": "^2.4.5",

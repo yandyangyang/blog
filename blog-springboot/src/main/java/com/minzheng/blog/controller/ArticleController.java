@@ -1,24 +1,42 @@
 package com.minzheng.blog.controller;
 
 
+import static com.minzheng.blog.constant.OptTypeConst.REMOVE;
+import static com.minzheng.blog.constant.OptTypeConst.SAVE_OR_UPDATE;
+import static com.minzheng.blog.constant.OptTypeConst.UPDATE;
+
 import com.minzheng.blog.annotation.OptLog;
-import com.minzheng.blog.dto.*;
+import com.minzheng.blog.dto.ArchiveDTO;
+import com.minzheng.blog.dto.ArticleBackDTO;
+import com.minzheng.blog.dto.ArticleDTO;
+import com.minzheng.blog.dto.ArticleHomeDTO;
+import com.minzheng.blog.dto.ArticlePreviewListDTO;
+import com.minzheng.blog.dto.ArticleSearchDTO;
 import com.minzheng.blog.enums.FilePathEnum;
 import com.minzheng.blog.service.ArticleService;
 import com.minzheng.blog.strategy.context.ArticleImportStrategyContext;
 import com.minzheng.blog.strategy.context.UploadStrategyContext;
-import com.minzheng.blog.vo.*;
+import com.minzheng.blog.vo.ArticleTopVO;
+import com.minzheng.blog.vo.ArticleVO;
+import com.minzheng.blog.vo.ConditionVO;
+import com.minzheng.blog.vo.DeleteVO;
+import com.minzheng.blog.vo.PageResult;
+import com.minzheng.blog.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.Valid;
 import java.util.List;
-
-import static com.minzheng.blog.constant.OptTypeConst.*;
+import javax.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 文章控制器

@@ -1,7 +1,8 @@
 <template>
   <div>
     <!-- banner -->
-    <div class="home-banner" :style="cover">
+    <div class="home-banner"
+         :style="cover">
       <div class="banner-container">
         <!-- 联系方式 -->
         <h1 class="blog-title animated zoomIn">
@@ -38,34 +39,34 @@
         </div> -->
       </div>
       <!-- 向下滚动 -->
-      <div class="scroll-down" @click="scrollDown">
-        <v-icon color="#fff" class="scroll-down-effects">
+      <div class="scroll-down"
+           @click="scrollDown">
+        <v-icon color="#fff"
+                class="scroll-down-effects">
           mdi-chevron-down
         </v-icon>
       </div>
     </div>
     <!-- 主页文章 -->
     <v-row class="home-container">
-      <v-col md="9" cols="12">
+      <v-col md="9"
+             cols="12">
         <!-- 说说轮播 -->
-        <v-card class="animated zoomIn" v-if="talkList.length > 0">
+        <v-card class="animated zoomIn"
+                v-if="talkList.length > 0">
           <Swiper :list="talkList" />
         </v-card>
-        <v-card
-          class="animated zoomIn article-card"
-          style="border-radius: 12px 8px 8px 12px"
-          v-for="(item, index) of articleList"
-          :key="item.id"
-        >
+        <v-card class="animated zoomIn article-card"
+                style="border-radius: 12px 8px 8px 12px"
+                v-for="(item, index) of articleList"
+                :key="item.id">
           <!-- 文章封面图 -->
           <div :class="isRight(index)">
             <router-link :to="'/articles/' + item.id">
-              <v-img
-                class="on-hover"
-                width="100%"
-                height="100%"
-                :src="item.articleCover"
-              />
+              <v-img class="on-hover"
+                     width="100%"
+                     height="100%"
+                     :src="item.articleCover" />
             </router-link>
           </div>
           <!-- 文章信息 -->
@@ -94,13 +95,11 @@
               </router-link>
               <span class="separator">|</span>
               <!-- 文章标签 -->
-              <router-link
-                style="display:inline-block"
-                :to="'/tags/' + tag.id"
-                class="mr-1"
-                v-for="tag of item.tagDTOList"
-                :key="tag.id"
-              >
+              <router-link style="display:inline-block"
+                           :to="'/tags/' + tag.id"
+                           class="mr-1"
+                           v-for="tag of item.tagDTOList"
+                           :key="tag.id">
                 <v-icon size="14">mdi-tag-multiple</v-icon>{{ tag.tagName }}
               </router-link>
             </div>
@@ -116,16 +115,23 @@
         </infinite-loading>
       </v-col>
       <!-- 博主信息 -->
-      <v-col md="3" cols="12" class="d-md-block d-none">
+      <v-col md="3"
+             cols="12"
+             class="d-md-block d-none">
         <div class="blog-wrapper">
           <v-card class="animated zoomIn blog-card mt-5">
+            <div style="text-align: right;">
+              <v-chip color="white"
+                      text-color="blue">
+                <v-icon size="14">mdi-map-marker</v-icon>
+                北京市
+              </v-chip>
+            </div>
             <div class="author-wrapper">
               <!-- 博主头像 -->
               <v-avatar size="110">
-                <img
-                  class="author-avatar"
-                  :src="blogInfo.websiteConfig.websiteAvatar"
-                />
+                <img class="author-avatar"
+                     :src="blogInfo.websiteConfig.websiteAvatar" />
               </v-avatar>
               <div style="font-size: 1.375rem;margin-top:0.625rem">
                 {{ blogInfo.websiteConfig.websiteAuthor }}
@@ -160,44 +166,48 @@
               </div>
             </div>
             <!-- 收藏按钮 -->
-            <a class="collection-btn" @click="tip = true">
-              <v-icon color="#fff" size="18" class="mr-1">mdi-bookmark</v-icon>
+            <a class="collection-btn"
+               @click="tip = true">
+              <v-icon color="#fff"
+                      size="18"
+                      class="mr-1">mdi-bookmark</v-icon>
               加入书签
             </a>
             <!-- 社交信息 -->
             <div class="card-info-social">
-              <a
-                v-if="isShowSocial('qq')"
-                class="mr-5 iconfont iconqq"
-                target="_blank"
-                :href="
+              <a v-if="isShowSocial('qq')"
+                 class="mr-5 iconfont iconqq"
+                 target="_blank"
+                 :href="
                   'http://wpa.qq.com/msgrd?v=3&uin=' +
                     blogInfo.websiteConfig.qq +
                     '&site=qq&menu=yes'
-                "
-              />
-              <a
-                v-if="isShowSocial('github')"
-                target="_blank"
-                :href="blogInfo.websiteConfig.github"
-                class="mr-5 iconfont icongithub"
-              />
-              <a
-                v-if="isShowSocial('gitee')"
-                target="_blank"
-                :href="blogInfo.websiteConfig.gitee"
-                class="iconfont icongitee-fill-round"
-              />
+                " />
+              <a v-if="isShowSocial('github')"
+                 target="_blank"
+                 :href="blogInfo.websiteConfig.github"
+                 class="mr-5 iconfont icongithub" />
+              <a v-if="isShowSocial('gitee')"
+                 target="_blank"
+                 :href="blogInfo.websiteConfig.gitee"
+                 class="iconfont icongitee-fill-round" />
             </div>
           </v-card>
           <!-- 网站信息 -->
           <v-card class="blog-card animated zoomIn mt-5 big">
-            <div class="web-info-title">
+            <!-- <div class="web-info-title">
               <v-icon size="20" color="#4c4948">mdi-chat-outline</v-icon>
               评论
             </div>
-            <div style="font-size:0.875rem" v-for="item in talkList" :key="item">
+            <div  style="font-size:0.875rem" v-for="item in talkList" :key="item">
               {{ item }}
+            </div> -->
+            <div class="con">
+              <div class="now-data-myself">
+                <div class="now-data-myself-time">{{ date }}</div>
+                <div class="now-data-myself-week">{{ week }}</div>
+              </div>
+              <Calendar></Calendar>
             </div>
           </v-card>
           <!-- 网站信息 -->
@@ -221,154 +231,182 @@
       </v-col>
     </v-row>
     <!-- 提示消息 -->
-    <v-snackbar v-model="tip" top color="#49b1f5" :timeout="2000">
+    <v-snackbar v-model="tip"
+                top
+                color="#49b1f5"
+                :timeout="2000">
       按CTRL+D 键将本页加入书签
     </v-snackbar>
   </div>
 </template>
 
 <script>
-import Swiper from "../../components/Swiper.vue";
-import EasyTyper from "easy-typer-js";
+import Swiper from '../../components/Swiper.vue'
+import EasyTyper from 'easy-typer-js'
+import Calendar from 'vue-calendar-component'
 export default {
   components: {
-    Swiper
+    Swiper,
+    Calendar,
   },
   created() {
-    this.init();
-    this.listHomeTalks();
-    this.timer = setInterval(this.runTime, 1000);
+    this.init()
+    this.listHomeTalks()
+    this.timer = setInterval(this.runTime, 1000)
+    var now = new Date()
+    this.date = now.getDate() //得到日期
+    var day = now.getDay() //得到周几
+    var arr_week = new Array(
+      '星期日',
+      '星期一',
+      '星期二',
+      '星期三',
+      '星期四',
+      '星期五',
+      '星期六'
+    )
+    this.week = arr_week[day]
   },
-  data: function() {
+  data: function () {
     return {
+      date: '',
+      week: '',
       tip: false,
-      time: "",
+      time: '',
       obj: {
-        output: "",
+        output: '',
         isEnd: false,
         speed: 300,
         singleBack: false,
         sleep: 0,
-        type: "rollback",
+        type: 'rollback',
         backSpeed: 40,
-        sentencePause: true
+        sentencePause: true,
       },
       articleList: [],
       talkList: [],
-      current: 1
-    };
+      current: 1,
+    }
   },
   methods: {
     // 初始化
     init() {
-      document.title = this.blogInfo.websiteConfig.websiteName;
+      document.title = this.blogInfo.websiteConfig.websiteName
       // 一言Api进行打字机循环输出效果
-      fetch("https://v1.hitokoto.cn?c=i")
-        .then(res => {
-          return res.json();
+      fetch('https://v1.hitokoto.cn?c=i')
+        .then((res) => {
+          return res.json()
         })
         .then(({ hitokoto }) => {
-          this.initTyped(hitokoto);
-        });
+          this.initTyped(hitokoto)
+        })
     },
     listHomeTalks() {
-      this.axios.get("/api/home/talks").then(({ data }) => {
-        this.talkList = data.data;
-      });
+      this.axios.get('/api/showMessages').then(({ data }) => {
+        this.talkList = data.data
+      })
     },
     initTyped(input, fn, hooks) {
-      const obj = this.obj;
+      const obj = this.obj
       // eslint-disable-next-line no-unused-vars
-      const typed = new EasyTyper(obj, input, fn, hooks);
+      const typed = new EasyTyper(obj, input, fn, hooks)
     },
     scrollDown() {
       window.scrollTo({
-        behavior: "smooth",
-        top: document.documentElement.clientHeight
-      });
+        behavior: 'smooth',
+        top: document.documentElement.clientHeight,
+      })
     },
     runTime() {
       var timeold =
         new Date().getTime() -
-        new Date(this.blogInfo.websiteConfig.websiteCreateTime).getTime();
-      var msPerDay = 24 * 60 * 60 * 1000;
-      var daysold = Math.floor(timeold / msPerDay);
-      var str = "";
-      var day = new Date();
-      str += daysold + "天";
-      str += day.getHours() + "时";
-      str += day.getMinutes() + "分";
-      str += day.getSeconds() + "秒";
-      this.time = str;
+        new Date(this.blogInfo.websiteConfig.websiteCreateTime).getTime()
+      var msPerDay = 24 * 60 * 60 * 1000
+      var daysold = Math.floor(timeold / msPerDay)
+      var str = ''
+      var day = new Date()
+      str += daysold + '天'
+      str += day.getHours() + '时'
+      str += day.getMinutes() + '分'
+      str += day.getSeconds() + '秒'
+      this.time = str
     },
     infiniteHandler($state) {
-      let md = require("markdown-it")();
+      let md = require('markdown-it')()
       this.axios
-        .get("/api/articles", {
+        .get('/api/articles', {
           params: {
-            current: this.current
-          }
+            current: this.current,
+          },
         })
         .then(({ data }) => {
           if (data.data.length) {
             // 去除markdown标签
-            data.data.forEach(item => {
+            data.data.forEach((item) => {
               item.articleContent = md
                 .render(item.articleContent)
-                .replace(/<\/?[^>]*>/g, "")
-                .replace(/[|]*\n/, "")
-                .replace(/&npsp;/gi, "");
-            });
-            this.articleList.push(...data.data);
-            this.current++;
-            $state.loaded();
+                .replace(/<\/?[^>]*>/g, '')
+                .replace(/[|]*\n/, '')
+                .replace(/&npsp;/gi, '')
+            })
+            this.articleList.push(...data.data)
+            this.current++
+            $state.loaded()
           } else {
-            $state.complete();
+            $state.complete()
           }
-        });
-    }
+        })
+    },
   },
   computed: {
     isRight() {
-      return function(index) {
+      return function (index) {
         if (index % 2 == 0) {
-          return "article-cover left-radius";
+          return 'article-cover left-radius'
         }
-        return "article-cover right-radius";
-      };
+        return 'article-cover right-radius'
+      }
     },
     blogInfo() {
-      return this.$store.state.blogInfo;
+      return this.$store.state.blogInfo
     },
     isShowSocial() {
-      return function(social) {
-        return this.blogInfo.websiteConfig.socialUrlList.indexOf(social) != -1;
-      };
+      return function (social) {
+        return this.blogInfo.websiteConfig.socialUrlList.indexOf(social) != -1
+      }
     },
     cover() {
-      var cover = "";
-      this.$store.state.blogInfo.pageList.forEach(item => {
-        if (item.pageLabel == "home") {
-          cover = item.pageCover;
+      var cover = ''
+      this.$store.state.blogInfo.pageList.forEach((item) => {
+        if (item.pageLabel == 'home') {
+          cover = item.pageCover
         }
-      });
-      return "background: url(" + cover + ") center center / cover no-repeat";
-    }
-  }
-};
+      })
+      return 'background: url(' + cover + ') center center / cover no-repeat'
+    },
+  },
+}
 </script>
 
 <style lang="stylus">
-.typed-cursor
-  opacity: 1
-  animation: blink 0.7s infinite
-@keyframes blink
-  0%
-    opacity: 1
-  50%
-    opacity: 0
-  100%
-    opacity: 1
+.typed-cursor {
+  opacity: 1;
+  animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
 </style>
 
 <style scoped>
@@ -557,7 +595,7 @@ export default {
   left: 0;
   z-index: -1;
   background: #ff7242;
-  content: "";
+  content: '';
   transition-timing-function: ease-out;
   transition-duration: 0.5s;
   transition-property: transform;
@@ -618,4 +656,85 @@ export default {
     transform: scale(1.2);
   }
 }
+.now-data-myself {
+  width: 40%;
+  position: absolute;
+  border-right: 1px solid rgba(227, 227, 227, 0.6);
+}
+.con {
+  position: relative;
+  max-width: 280px;
+  margin: auto;
+}
+::v-deep .con .wh_content_all {
+  background: transparent !important;
+}
+
+::v-deep .wh_top_changge li {
+  color: #f56c6c !important;
+  font-size: 11px !important;
+}
+::v-deep .wh_content_item,
+.wh_content_item_tag {
+  color: #303133 !important;
+}
+::v-deep .wh_content_item .wh_isToday {
+  background: #00d985 !important;
+  color: #fff !important;
+}
+::v-deep .wh_content_item .wh_chose_day {
+  background: #409eff !important;
+  color: #ffff !important;
+}
+::v-deep .wh_item_date:hover {
+  background: rgb(217, 236, 255) !important;
+  border-radius: 100px !important;
+  color: rgb(102, 177, 255) !important;
+}
+::v-deep .wh_jiantou1[data-v-2ebcbc83] {
+  border-top: 2px solid #909399;
+  border-left: 2px solid #909399;
+  width: 7px;
+  height: 7px;
+}
+::v-deep .wh_jiantou2[data-v-2ebcbc83] {
+  border-top: 2px solid #909399;
+  border-right: 2px solid #909399;
+  width: 7px;
+  height: 7px;
+}
+::v-deep .wh_top_tag[data-v-2ebcbc83] {
+  color: #409eff;
+  border-top: 1px solid rgba(227, 227, 227, 0.6);
+  border-bottom: 1px solid rgba(227, 227, 227, 0.6);
+}
+::v-deep .wh_container[data-v-2ebcbc83] {
+  max-width: 280px;
+}
+::v-deep .wh_top_changge[data-v-2ebcbc83] {
+  display: flex;
+  width: 50%;
+  margin-left: 43%;
+}
+
+.now-data-myself-time {
+  text-align: center;
+  color: #F56C6C;
+  font-size: 20px;
+  height: 30px;
+  line-height: 30px;
+  font-family: "Helvetica Neue";
+}
+.now-data-myself-week {
+  position: absolute;
+  top: 22px;
+  left: 31px;
+  font-size: 10px;
+  color: #909399;
+}
+
+::v-deep .wh_top_changge .wh_content_li[data-v-2ebcbc83] {
+  font-family: Helvetica;
+}
+
 </style>

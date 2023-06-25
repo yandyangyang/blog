@@ -55,7 +55,7 @@
             </li>
           </ul>
         </div>
-        <div class="menus-item">
+        <!-- <div class="menus-item">
           <a class="menu-btn">
             <i class="iconfont iconqita" /> 娱乐
             <i class="iconfont iconxiangxia2 expand" />
@@ -72,7 +72,7 @@
               </router-link>
             </li>
           </ul>
-        </div>
+        </div> -->
         <div class="menus-item">
           <router-link class="menu-btn" to="/links">
             <i class="iconfont iconlianjie" /> 友链
@@ -216,7 +216,7 @@ ul {
   text-shadow: none;
 }
 .nav-container {
-  padding: 0 200px;
+  padding: 0 250px;
   font-size: 14px;
   width: 100%;
   height: 100%;

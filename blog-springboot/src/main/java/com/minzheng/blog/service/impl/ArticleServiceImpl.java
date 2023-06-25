@@ -1,7 +1,17 @@
 package com.minzheng.blog.service.impl;
 
+import static com.minzheng.blog.constant.CommonConst.ARTICLE_SET;
+import static com.minzheng.blog.constant.CommonConst.FALSE;
+import static com.minzheng.blog.constant.RedisPrefixConst.ARTICLE_LIKE_COUNT;
+import static com.minzheng.blog.constant.RedisPrefixConst.ARTICLE_USER_LIKE;
+import static com.minzheng.blog.constant.RedisPrefixConst.ARTICLE_VIEWS_COUNT;
+import static com.minzheng.blog.enums.ArticleStatusEnum.DRAFT;
+import static com.minzheng.blog.enums.ArticleStatusEnum.PUBLIC;
+
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -10,7 +20,15 @@ import com.minzheng.blog.dao.ArticleDao;
 import com.minzheng.blog.dao.ArticleTagDao;
 import com.minzheng.blog.dao.CategoryDao;
 import com.minzheng.blog.dao.TagDao;
-import com.minzheng.blog.dto.*;
+import com.minzheng.blog.dto.ArchiveDTO;
+import com.minzheng.blog.dto.ArticleBackDTO;
+import com.minzheng.blog.dto.ArticleDTO;
+import com.minzheng.blog.dto.ArticleHomeDTO;
+import com.minzheng.blog.dto.ArticlePaginationDTO;
+import com.minzheng.blog.dto.ArticlePreviewDTO;
+import com.minzheng.blog.dto.ArticlePreviewListDTO;
+import com.minzheng.blog.dto.ArticleRecommendDTO;
+import com.minzheng.blog.dto.ArticleSearchDTO;
 import com.minzheng.blog.entity.Article;
 import com.minzheng.blog.entity.ArticleTag;
 import com.minzheng.blog.entity.Category;
@@ -18,30 +36,41 @@ import com.minzheng.blog.entity.Tag;
 import com.minzheng.blog.enums.FileExtEnum;
 import com.minzheng.blog.enums.FilePathEnum;
 import com.minzheng.blog.exception.BizException;
-import com.minzheng.blog.service.*;
+import com.minzheng.blog.service.ArticleService;
+import com.minzheng.blog.service.ArticleTagService;
+import com.minzheng.blog.service.BlogInfoService;
+import com.minzheng.blog.service.RedisService;
+import com.minzheng.blog.service.TagService;
 import com.minzheng.blog.strategy.context.SearchStrategyContext;
 import com.minzheng.blog.strategy.context.UploadStrategyContext;
 import com.minzheng.blog.util.BeanCopyUtils;
 import com.minzheng.blog.util.CommonUtils;
+import com.minzheng.blog.util.OkHttpUtil;
 import com.minzheng.blog.util.PageUtils;
 import com.minzheng.blog.util.UserUtils;
-import com.minzheng.blog.vo.*;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpSession;
+import com.minzheng.blog.vo.ArticleTopVO;
+import com.minzheng.blog.vo.ArticleVO;
+import com.minzheng.blog.vo.ConditionVO;
+import com.minzheng.blog.vo.DeleteVO;
+import com.minzheng.blog.vo.PageResult;
+import com.minzheng.blog.vo.WebsiteConfigVO;
 import java.io.ByteArrayInputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-
-import static com.minzheng.blog.constant.CommonConst.ARTICLE_SET;
-import static com.minzheng.blog.constant.CommonConst.FALSE;
-import static com.minzheng.blog.constant.RedisPrefixConst.*;
-import static com.minzheng.blog.enums.ArticleStatusEnum.DRAFT;
-import static com.minzheng.blog.enums.ArticleStatusEnum.PUBLIC;
+import javax.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -53,6 +82,7 @@ import static com.minzheng.blog.enums.ArticleStatusEnum.PUBLIC;
 @Service
 @Slf4j
 public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> implements ArticleService {
+
     @Autowired
     private ArticleDao articleDao;
     @Autowired
@@ -75,6 +105,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     private BlogInfoService blogInfoService;
     @Autowired
     private UploadStrategyContext uploadStrategyContext;
+    @Autowired
+    private OkHttpUtil okHttpUtil;
 
     @Override
     public PageResult<ArchiveDTO> listArchives() {
@@ -96,7 +128,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
             return new PageResult<>();
         }
         // 查询后台文章
-        List<ArticleBackDTO> articleBackDTOList = articleDao.listArticleBacks(PageUtils.getLimitCurrent(), PageUtils.getSize(), condition);
+        List<ArticleBackDTO> articleBackDTOList = articleDao.listArticleBacks(PageUtils.getLimitCurrent(),
+                PageUtils.getSize(), condition);
         // 查询文章点赞量和浏览量
         Map<Object, Double> viewsCountMap = redisService.zAllScore(ARTICLE_VIEWS_COUNT);
         Map<String, Object> likeCountMap = redisService.hGetAll(ARTICLE_LIKE_COUNT);
@@ -119,7 +152,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     @Override
     public ArticlePreviewListDTO listArticlesByCondition(ConditionVO condition) {
         // 查询文章
-        List<ArticlePreviewDTO> articlePreviewDTOList = articleDao.listArticlesByCondition(PageUtils.getLimitCurrent(), PageUtils.getSize(), condition);
+        List<ArticlePreviewDTO> articlePreviewDTOList = articleDao.listArticlesByCondition(PageUtils.getLimitCurrent(),
+                PageUtils.getSize(), condition);
         // 搜索条件对应名(标签或分类名)
         String name;
         if (Objects.nonNull(condition.getCategoryId())) {
@@ -135,11 +169,13 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     @Override
     public ArticleDTO getArticleById(Integer articleId) {
         // 查询推荐文章
-        CompletableFuture<List<ArticleRecommendDTO>> recommendArticleList = CompletableFuture.supplyAsync(() -> articleDao.listRecommendArticles(articleId));
+        CompletableFuture<List<ArticleRecommendDTO>> recommendArticleList = CompletableFuture.supplyAsync(
+                () -> articleDao.listRecommendArticles(articleId));
         // 查询最新文章
         CompletableFuture<List<ArticleRecommendDTO>> newestArticleList = CompletableFuture.supplyAsync(() -> {
             List<Article> articleList = articleDao.selectList(new LambdaQueryWrapper<Article>()
-                    .select(Article::getId, Article::getArticleTitle, Article::getArticleCover, Article::getCreateTime).eq(Article::getIsDelete, FALSE)
+                    .select(Article::getId, Article::getArticleTitle, Article::getArticleCover, Article::getCreateTime).eq(
+                            Article::getIsDelete, FALSE)
                     .eq(Article::getStatus, PUBLIC.getStatus()).orderByDesc(Article::getId).last("limit 5"));
             return BeanCopyUtils.copyList(articleList, ArticleRecommendDTO.class);
         });
@@ -201,7 +237,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     @Override
     public void saveOrUpdateArticle(ArticleVO articleVO) {
         // 查询博客配置信息
-        CompletableFuture<WebsiteConfigVO> webConfig = CompletableFuture.supplyAsync(() -> blogInfoService.getWebsiteConfig());
+        CompletableFuture<WebsiteConfigVO> webConfig = CompletableFuture.supplyAsync(
+                () -> blogInfoService.getWebsiteConfig());
 
         // 保存文章分类
         Category category = saveArticleCategory(articleVO);
@@ -211,7 +248,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
             article.setCategoryId(category.getId());
         }
         // 设定默认文章封面
-        if (StrUtil.isBlank(article.getArticleCover())){
+        if (StrUtil.isBlank(article.getArticleCover())) {
             try {
                 article.setArticleCover(webConfig.get().getArticleCover());
             } catch (Exception e) {
@@ -232,7 +269,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
      */
     private Category saveArticleCategory(ArticleVO articleVO) {
         // 判断分类是否存在
-        Category category = categoryDao.selectOne(new LambdaQueryWrapper<Category>().eq(Category::getCategoryName, articleVO.getCategoryName()));
+        Category category = categoryDao.selectOne(
+                new LambdaQueryWrapper<Category>().eq(Category::getCategoryName, articleVO.getCategoryName()));
         if (Objects.isNull(category) && !articleVO.getStatus().equals(DRAFT.getStatus())) {
             category = Category.builder().categoryName(articleVO.getCategoryName()).build();
             categoryDao.insert(category);
@@ -251,10 +289,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
     public void updateArticleDelete(DeleteVO deleteVO) {
         // 修改文章逻辑删除状态
         List<Article> articleList = deleteVO.getIdList().stream().map(id -> Article.builder()
-                        .id(id)
-                        .isTop(FALSE)
-                        .isDelete(deleteVO.getIsDelete())
-                        .build())
+                .id(id)
+                .isTop(FALSE)
+                .isDelete(deleteVO.getIsDelete())
+                .build())
                 .collect(Collectors.toList());
         this.updateBatchById(articleList);
     }
@@ -278,7 +316,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
         List<String> urlList = new ArrayList<>();
         for (Article article : articleList) {
             try (ByteArrayInputStream inputStream = new ByteArrayInputStream(article.getArticleContent().getBytes())) {
-                String url = uploadStrategyContext.executeUploadStrategy(article.getArticleTitle() + FileExtEnum.MD.getExtName(), inputStream, FilePathEnum.MD.getPath());
+                String url = uploadStrategyContext.executeUploadStrategy(
+                        article.getArticleTitle() + FileExtEnum.MD.getExtName(), inputStream, FilePathEnum.MD.getPath());
                 urlList.add(url);
             } catch (Exception e) {
                 log.error(StrUtil.format("导入文章失败,堆栈:{}", ExceptionUtil.stacktraceToString(e)));
@@ -320,7 +359,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
      */
     public void updateArticleViewsCount(Integer articleId) {
         // 判断是否第一次访问，增加浏览量
-        Set<Integer> articleSet = CommonUtils.castSet(Optional.ofNullable(session.getAttribute(ARTICLE_SET)).orElseGet(HashSet::new), Integer.class);
+        Set<Integer> articleSet = CommonUtils.castSet(
+                Optional.ofNullable(session.getAttribute(ARTICLE_SET)).orElseGet(HashSet::new), Integer.class);
         if (!articleSet.contains(articleId)) {
             articleSet.add(articleId);
             session.setAttribute(ARTICLE_SET, articleSet);
@@ -349,18 +389,44 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
             // 对比新增不存在的标签
             tagNameList.removeAll(existTagNameList);
             if (CollectionUtils.isNotEmpty(tagNameList)) {
-                List<Tag> tagList = tagNameList.stream().map(item -> Tag.builder().tagName(item).build()).collect(Collectors.toList());
+                List<Tag> tagList = tagNameList.stream().map(item -> Tag.builder().tagName(item).build()).collect(
+                        Collectors.toList());
                 tagService.saveBatch(tagList);
                 List<Integer> tagIdList = tagList.stream().map(Tag::getId).collect(Collectors.toList());
                 existTagIdList.addAll(tagIdList);
             }
             // 提取标签id绑定文章
             List<ArticleTag> articleTagList = existTagIdList.stream().map(item -> ArticleTag.builder()
-                            .articleId(articleId)
-                            .tagId(item)
-                            .build())
+                    .articleId(articleId)
+                    .tagId(item)
+                    .build())
                     .collect(Collectors.toList());
             articleTagService.saveBatch(articleTagList);
+        }
+    }
+
+    @Scheduled(cron = "0 30 4 * * ?")
+    public void getEveryDayNews() {
+        log.info("获取今日早报");
+        String url = "https://v2.alapi.cn/api/zaobao";
+        Map<String, String> map = new HashMap<>();
+        map.put("format", "json");
+        map.put("token", "yrrX6eRwxxUCTdUx");
+        String s = okHttpUtil.doGet(url, map);
+        JSONObject jsonObject = JSONObject.parseObject(s);
+        if (jsonObject.getInteger("code") == 200) {
+            List<String> list = new ArrayList<String>() {{
+                add("基础");
+            }};
+            JSONObject data = jsonObject.getJSONObject("data");
+            String headImage = data.getString("head_image");
+            JSONArray news = jsonObject.getJSONArray("news");
+            ArticleVO articleVO = ArticleVO.builder().articleTitle("今日早报").articleCover(headImage).articleContent(
+                    news.toString())
+                    .categoryName("生活").tagNameList(list).isTop(1).type(1).build();
+            saveOrUpdateArticle(articleVO);
+        } else {
+            log.warn("获取今日早报失败");
         }
     }
 
