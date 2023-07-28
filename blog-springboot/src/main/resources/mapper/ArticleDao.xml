@@ -218,27 +218,27 @@
             </if>
             <if test="condition.tagId != null">
                 and id in
-                 (
-                  SELECT
-                    article_id
-                  FROM
-                    tb_article_tag
-                  WHERE
-                    tag_id = #{condition.tagId}
-                 )
+                (
+                SELECT
+                article_id
+                FROM
+                tb_article_tag
+                WHERE
+                tag_id = #{condition.tagId}
+                )
             </if>
         </where>
         ORDER BY
-          is_top DESC,
-          id DESC
+        is_top DESC,
+        id DESC
         LIMIT #{current},#{size}
         ) a
         LEFT JOIN tb_category c ON a.category_id = c.id
         LEFT JOIN tb_article_tag atg ON a.id = atg.article_id
         LEFT JOIN tb_tag t ON t.id = atg.tag_id
         ORDER BY
-          is_top DESC,
-          a.id DESC
+        is_top DESC,
+        a.id DESC
     </select>
 
     <select id="countArticleBacks" resultType="java.lang.Integer">
@@ -246,7 +246,7 @@
         count(DISTINCT a.id)
         from
         tb_article a
-        LEFT JOIN tb_article_tag tat on  a.id = tat.article_id
+        LEFT JOIN tb_article_tag tat on a.id = tat.article_id
         <where>
             is_delete = #{condition.isDelete}
             <if test="condition.keywords != null">
@@ -301,6 +301,10 @@
             date
         ORDER BY
             date DESC
+    </select>
+    <select id="getArticleDtoByTitle" resultType="com.minzheng.blog.entity.Article">
+        select * from tb_article
+        where article_title = #{name}
     </select>
 
 </mapper>

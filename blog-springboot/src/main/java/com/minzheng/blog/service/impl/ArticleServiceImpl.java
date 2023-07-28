@@ -255,7 +255,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
                 throw new BizException("设定默认文章封面失败");
             }
         }
-        article.setUserId(UserUtils.getLoginUser().getUserInfoId());
+        article.setUserId(1);
         this.saveOrUpdate(article);
         // 保存文章标签
         saveArticleTag(articleVO, article.getId());
@@ -407,6 +407,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
 
     @Scheduled(cron = "0 30 4 * * ?")
     public void getEveryDayNews() {
+        log.info("删除昨日早报");
+        Article article = articleDao.getArticleDtoByTitle("今日早报");
+        if (article != null) {
+            articleDao.deleteById(article.getId());
+        }
         log.info("获取今日早报");
         String url = "https://v2.alapi.cn/api/zaobao";
         Map<String, String> map = new HashMap<>();
@@ -420,14 +425,26 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
             }};
             JSONObject data = jsonObject.getJSONObject("data");
             String headImage = data.getString("head_image");
-            JSONArray news = jsonObject.getJSONArray("news");
+            JSONArray news = data.getJSONArray("news");
             ArticleVO articleVO = ArticleVO.builder().articleTitle("今日早报").articleCover(headImage).articleContent(
-                    news.toString())
-                    .categoryName("生活").tagNameList(list).isTop(1).type(1).build();
+                    arrayToString(news))
+                    .categoryName("生活").tagNameList(list).isTop(0).type(1).build();
             saveOrUpdateArticle(articleVO);
         } else {
             log.warn("获取今日早报失败");
         }
+    }
+
+    private String arrayToString(JSONArray jsonArray) {
+        String[] strings = new String[jsonArray.size()];
+        String[] objects = (String[]) jsonArray.toArray(strings);
+        StringBuilder sb = new StringBuilder();
+        for (String object : objects) {
+            sb.append(object + "<br/>");
+        }
+        return sb.toString();
+
+
     }
 
 }

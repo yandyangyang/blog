@@ -120,13 +120,6 @@
              class="d-md-block d-none">
         <div class="blog-wrapper">
           <v-card class="animated zoomIn blog-card mt-5">
-            <div style="text-align: right;">
-              <v-chip color="white"
-                      text-color="blue">
-                <v-icon size="14">mdi-map-marker</v-icon>
-                北京市
-              </v-chip>
-            </div>
             <div class="author-wrapper">
               <!-- 博主头像 -->
               <v-avatar size="110">

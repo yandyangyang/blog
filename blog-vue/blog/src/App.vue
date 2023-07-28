@@ -81,3 +81,8 @@ export default {
   }
 };
 </script>
+<style scoped>
+::v-deep .v-main{
+  /* background-color: rgb(8, 209, 245); */
+}
+</style>

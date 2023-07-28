@@ -19,31 +19,31 @@ const routes = [
       title: "归档"
     }
   },
-  {
-    path: "/albums",
-    component: resolve => require(["../views/album/Album.vue"], resolve),
-    meta: {
-      title: "相册"
-    }
-  },
-  {
-    path: "/talks",
-    component: resolve => require(["../views/talk/Talk.vue"], resolve),
-    meta: {
-      title: "说说"
-    }
-  },
-  {
-    path: "/talks/:talkId",
-    component: resolve => require(["../views/talk/TalkInfo.vue"], resolve),
-    meta: {
-      title: "说说"
-    }
-  },
-  {
-    path: "/albums/:albumId",
-    component: resolve => require(["../views/album/Photo.vue"], resolve)
-  },
+  // {
+  //   path: "/albums",
+  //   component: resolve => require(["../views/album/Album.vue"], resolve),
+  //   meta: {
+  //     title: "相册"
+  //   }
+  // },
+  // {
+  //   path: "/talks",
+  //   component: resolve => require(["../views/talk/Talk.vue"], resolve),
+  //   meta: {
+  //     title: "说说"
+  //   }
+  // },
+  // {
+  //   path: "/talks/:talkId",
+  //   component: resolve => require(["../views/talk/TalkInfo.vue"], resolve),
+  //   meta: {
+  //     title: "说说"
+  //   }
+  // },
+  // {
+  //   path: "/albums/:albumId",
+  //   component: resolve => require(["../views/album/Photo.vue"], resolve)
+  // },
   {
     path: "/tags",
     component: resolve => require(["../views/tag/Tag.vue"], resolve),

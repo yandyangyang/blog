@@ -79,4 +79,6 @@ public interface ArticleDao extends BaseMapper<Article> {
      */
     List<ArticleStatisticsDTO> listArticleStatistics();
 
+    Article getArticleDtoByTitle(String name);
+
 }
