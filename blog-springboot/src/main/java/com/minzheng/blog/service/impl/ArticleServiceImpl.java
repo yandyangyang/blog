@@ -431,7 +431,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleDao, Article> impleme
                     .categoryName("生活").tagNameList(list).isTop(0).type(1).build();
             saveOrUpdateArticle(articleVO);
         } else {
-            log.warn("获取今日早报失败");
+            log.error("获取今日早报失败");
         }
     }
 

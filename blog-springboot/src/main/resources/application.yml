@@ -76,9 +76,6 @@ mybatis-plus:
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
 
-logging:
-  level:
-    com.minzheng.blog.dao: debug
 
 # 搜索模式 可选 elasticsearch或mysql
 search:
