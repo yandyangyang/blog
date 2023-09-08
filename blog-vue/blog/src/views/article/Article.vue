@@ -823,7 +823,7 @@ pre.hljs {
   padding: 12px 2px 12px 40px !important;
   border-radius: 5px !important;
   position: relative;
-  font-size: 14px !important;
+  font-size: 16px !important;
   line-height: 22px !important;
   overflow: hidden !important;
   &:hover .copy-btn {
